@@ -1,0 +1,29 @@
+What is the problem this paper tried to solve?
+A: The original 512-byte UNIX file system only provides only about two percent of the maximum disk bandwidth or about 20 kilobytes per second per arm.
+
+What is the root cause of the problem? In one sentence.
+A:The combination of the small block size, limited read-ahead in the system, and many seeks.
+
+For each optimization, how does the author get the idea?
+A:
+Optimizing Storage Utilization
+Observing that when allocating large amounts of small files the waste of space is immense while this waste is less severe in file systems with smaller block size, the author might want to combine the merits of both large and small block sizes, namely high throughput and hign utilization, by adding one more layer of space partitioning, and separate the unit of  transfer and the unit of storage.
+
+File System Parameterization
+If he knows the implementation of the old file system, then he will know that it didn't know anything about the hardware.
+By comparing throught when transfering large files stored in contiguous blocks he can notice the improvement.
+
+Layout policies:
+By running commands like ls and measuring the time taken and looking at inode distribution he can notice that inodes of files in a same directory are distributed randomly in the disk thus the high frequency of seek.
+By transfering large files and measuring time taken and analysing the distribution of data blocks he can find that data blocks randomly spread in the disk are also a cause of seeks.
+
+For each optimization, does it always work? In which case it cannot work?
+A:
+Optimizing Storage Utilization
+It works as well as the original file system in terms of utilization, and fails facing the same problem that small files (not too small that inodes alone can store the data) can still cause fragmentational waste of space.
+
+File System Parameterization
+When parameters in file system are set incongruously to the hardware, performance tends to drop.
+
+Layout Policies
+When the file system is more than 90 percent full, the performance drops, to a lowest at 50 percent peak throughput when completely full.
